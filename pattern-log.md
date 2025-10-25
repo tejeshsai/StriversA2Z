@@ -105,3 +105,44 @@ def build_index_map(items):
 min_elem = min(freq, key=freq.get)
 max_elem = max(freq, key=freq.get)
 ```
+
+## Two Pointer Pattern
+
+**Core Concept**: Use two pointers to traverse an array from different positions, typically one slow and one fast, to solve problems in-place with O(1) space.
+
+**When to use**:
+- Removing duplicates from sorted arrays
+- Finding pairs that sum to a target
+- Merging two sorted arrays
+- Detecting cycles in linked lists
+- Partitioning arrays based on conditions
+- Finding subarrays with specific properties
+
+**Pattern**:
+```python
+def two_pointer_approach(nums):
+    left = 0  # Slow pointer - tracks position for next valid element
+    right = 1  # Fast pointer - scans ahead to find next different element
+    
+    while right < len(nums):
+        if nums[left] == nums[right]:
+            right += 1  # Skip duplicates
+        else:
+            nums[left + 1] = nums[right]  # Place unique element
+            left += 1
+            right += 1
+    
+    return left + 1  # New length
+```
+
+**Key variations**:
+- **Opposite ends**: Start from both ends and move inward
+- **Same direction**: Both pointers move in same direction at different speeds
+- **Fast-slow**: One pointer moves twice as fast as the other
+
+**Examples**:
+- **Remove duplicates**: `[1,1,2,2,3] → [1,2,3]`
+- **Two sum**: Find pair that sums to target
+- **Palindrome check**: Compare characters from both ends
+
+**Key insight**: One pointer tracks the "write position" while the other scans for "valid elements" to write.
