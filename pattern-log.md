@@ -142,7 +142,42 @@ def two_pointer_approach(nums):
 
 **Examples**:
 - **Remove duplicates**: `[1,1,2,2,3] → [1,2,3]`
+- **Move zeros to end**: `[1,0,2,3,0,4] → [1,2,3,4,0,0]`
 - **Two sum**: Find pair that sums to target
 - **Palindrome check**: Compare characters from both ends
 
 **Key insight**: One pointer tracks the "write position" while the other scans for "valid elements" to write.
+
+## Mathematical Patterns
+
+### Arithmetic Sequence Sum Pattern
+
+**Core Concept**: Use mathematical formulas to solve problems involving sequences, especially finding missing elements or calculating sums efficiently.
+
+**When to use**:
+- Finding missing numbers in sequences
+- Calculating sums of arithmetic progressions
+- Validating sequence completeness
+- Finding duplicates using mathematical properties
+- Optimizing sum calculations
+
+**Pattern**:
+```python
+def find_missing_in_sequence(nums, n):
+    # Sum of arithmetic sequence 1 to n
+    expected_sum = n * (n + 1) // 2
+    actual_sum = sum(nums)
+    return expected_sum - actual_sum
+```
+
+**Mathematical Formula**:
+- **Sum of 1 to n**: `n * (n + 1) / 2`
+- **Sum of a to b**: `(b - a + 1) * (a + b) / 2`
+- **Missing number**: `Expected Sum - Actual Sum`
+
+**Examples**:
+- **Find missing number**: `[1,2,4,5]` with n=5 → Missing = 3
+- **Validate sequence**: Check if array contains all numbers 1 to n
+- **Find duplicate**: If sum exceeds expected, find the duplicate
+
+**Key insight**: Mathematical formulas can often replace complex algorithms, providing O(1) space solutions for sequence problems.
