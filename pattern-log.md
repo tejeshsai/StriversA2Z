@@ -181,3 +181,92 @@ def find_missing_in_sequence(nums, n):
 - **Find duplicate**: If sum exceeds expected, find the duplicate
 
 **Key insight**: Mathematical formulas can often replace complex algorithms, providing O(1) space solutions for sequence problems.
+
+## Bit Manipulation Patterns
+
+### XOR Properties Pattern
+
+**Core Concept**: XOR has unique properties that make it perfect for finding single elements in arrays with duplicates, detecting differences, and toggling bits.
+
+**Key XOR Properties**:
+- `a ^ a = 0` (any number XORed with itself equals 0)
+- `a ^ 0 = a` (any number XORed with 0 equals itself)
+- `a ^ b = b ^ a` (commutative property)
+- `(a ^ b) ^ c = a ^ (b ^ c)` (associative property)
+
+**When to use**:
+- Finding single element in array where all others appear twice
+- Detecting differences between two arrays
+- Toggling bits (XOR with 1 flips the bit)
+- Finding missing numbers using XOR properties
+- Swapping two numbers without temporary variable
+
+**Pattern**:
+```python
+def find_single_element(nums):
+    result = 0
+    for num in nums:
+        result ^= num  # XOR all elements
+    return result
+```
+
+**Examples**:
+- **Single Number**: `[2,1,2,1,3]` → All pairs cancel out, only 3 remains
+- **Missing Number**: XOR expected sequence with actual array
+- **Swap without temp**: `a ^= b; b ^= a; a ^= b`
+- **Toggle bits**: `num ^= (1 << position)` flips bit at position
+
+**Complexity**:
+- Time: O(n) - single pass through array
+- Space: O(1) - only one variable needed
+
+**Key insight**: XOR's self-canceling property (`a ^ a = 0`) makes it perfect for eliminating duplicates and finding unique elements efficiently.
+
+### Prefix Sum + Hashmap Pattern
+
+**Core Concept**: Use prefix sums to efficiently find subarrays with specific properties by storing prefix sum information in a hashmap for O(1) lookups.
+
+**When to use**:
+- Finding subarrays with specific sum (works with negative numbers)
+- Counting subarrays that sum to a target
+- Finding longest/shortest subarrays with given sum
+- Problems involving contiguous subarray sums
+- When sliding window fails due to negative numbers
+
+**Pattern**:
+```python
+def subarray_with_sum(nums, k):
+    prefix_map = {0: -1}  # Handle subarrays starting from index 0
+    prefix_sum = 0
+    result = 0  # max length, count, etc.
+    
+    for i, num in enumerate(nums):
+        prefix_sum += num
+        target = prefix_sum - k
+        
+        if target in prefix_map:
+            # Found a subarray that sums to k
+            # Calculate length: i - prefix_map[target]
+            # Or increment count: result += prefix_map[target]
+            result = max(result, i - prefix_map[target])
+        
+        # Store prefix sum (for length: only first occurrence, for count: all occurrences)
+        if prefix_sum not in prefix_map:
+            prefix_map[prefix_sum] = i
+        # For counting: prefix_map[prefix_sum] = prefix_map.get(prefix_sum, 0) + 1
+    
+    return result
+```
+
+**Key insight**: `subarray_sum(i,j) = prefix_sum[j] - prefix_sum[i-1]`. If we want sum = k, we need `prefix_sum[j] - prefix_sum[i-1] = k`, which means `prefix_sum[i-1] = prefix_sum[j] - k`.
+
+**Examples**:
+- **Longest subarray with sum k**: Store first occurrence of each prefix sum
+- **Count subarrays with sum k**: Store count of occurrences of each prefix sum
+- **Subarray sum equals k**: Works with both positive and negative numbers
+
+**Complexity**:
+- Time: O(n) - single pass through array
+- Space: O(n) - hashmap stores at most n prefix sums
+
+**Key insight**: The prefix sum technique transforms subarray problems into lookup problems, making them solvable in O(n) time even with negative numbers.
