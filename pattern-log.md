@@ -106,6 +106,47 @@ min_elem = min(freq, key=freq.get)
 max_elem = max(freq, key=freq.get)
 ```
 
+### Two Sum Pattern (Hashmap Complement Lookup)
+
+**Core Concept**: Use a hashmap to store value → index mappings while iterating, checking if the complement (target - current_value) exists in previously seen elements.
+
+**When to use**:
+- Finding two numbers that sum to a target
+- Finding pairs with specific relationships (difference, product, etc.)
+- When you need to return indices (not just values)
+- Problems requiring O(n) time with a single pass
+
+**Pattern**:
+```python
+def twoSum(nums: list, target: int) -> list:
+    hashmap = {}  # value -> index mapping
+    
+    for i, num in enumerate(nums):
+        complement = target - num
+        
+        if complement in hashmap:
+            # Found the pair
+            return [hashmap[complement], i]
+        
+        # Store current value for future lookups
+        hashmap[num] = i
+    
+    return [-1, -1]  # No pair found
+```
+
+**Key insight**: Instead of checking all pairs O(n²), store values as we iterate and check if the complement exists. This transforms the problem from nested loops to hashmap lookups.
+
+**Complexity**:
+- Time: O(n) - single pass through array
+- Space: O(n) - hashmap stores at most n elements
+
+**Examples**:
+- **Two Sum**: `[2, 5, 3, 7, 8]`, target=7 → `[0, 1]` (2 + 5 = 7)
+- **Finding pairs**: Store seen values, check for complement in constant time
+- **Variations**: Can be adapted for difference, product, or other relationships
+
+**Important**: Only store the value after checking for complement to avoid using the same element twice (unless duplicates are allowed).
+
 ## Two Pointer Pattern
 
 **Core Concept**: Use two pointers to traverse an array from different positions, typically one slow and one fast, to solve problems in-place with O(1) space.
@@ -147,6 +188,79 @@ def two_pointer_approach(nums):
 - **Palindrome check**: Compare characters from both ends
 
 **Key insight**: One pointer tracks the "write position" while the other scans for "valid elements" to write.
+
+### Dutch National Flag Algorithm (3-Way Partitioning)
+
+**Core Concept**: Use three pointers (low, mid, high) to partition an array into three regions in a single pass, achieving O(n) time with O(1) space.
+
+**When to use**:
+- Sorting arrays with only 3 distinct values (0s, 1s, 2s)
+- Partitioning arrays into three regions based on a pivot
+- Categorizing data into three distinct groups efficiently
+- Problems requiring in-place sorting with limited value range
+
+**Pattern**:
+```python
+def dutchNationalFlag(nums: list) -> None:
+    low = 0          # Points to where next 0 should go
+    mid = 0          # Current element being examined
+    high = len(nums) - 1  # Points to where next 2 should go
+    
+    while mid <= high:
+        if nums[mid] == 0:
+            # Swap with low, both increment
+            nums[low], nums[mid] = nums[mid], nums[low]
+            low += 1
+            mid += 1
+        elif nums[mid] == 1:
+            # Already in correct region, just move mid
+            mid += 1
+        else:  # nums[mid] == 2
+            # Swap with high, only high decrements
+            nums[high], nums[mid] = nums[mid], nums[high]
+            high -= 1
+            # Note: mid doesn't increment here because we haven't examined the swapped value
+```
+
+**Pointer Invariants**:
+- Elements before `low` are all 0s
+- Elements between `low` and `mid` are all 1s
+- Elements after `high` are all 2s
+- Elements between `mid` and `high` are unknown/unprocessed
+
+**Key Rules**:
+- **When `nums[mid] == 0`**: Swap with `low`, increment both `low` and `mid` (the element at `low` was a 1, now it's in correct position)
+- **When `nums[mid] == 1`**: Just increment `mid` (already in correct region)
+- **When `nums[mid] == 2`**: Swap with `high`, decrement only `high` (don't increment `mid` because swapped element is unexamined)
+
+**Complexity**:
+- Time: O(n) - single pass through array
+- Space: O(1) - only three pointer variables used
+
+**Examples**:
+- **Sort 0s, 1s, 2s**: `[2, 0, 2, 1, 1, 0]` → `[0, 0, 1, 1, 2, 2]`
+- **Three-way partitioning**: Partition array based on pivot value
+- **Color sorting**: RGB color categorization problems
+
+**Key insight**: This is more efficient than counting and rebuilding (which requires 2 passes). The algorithm maintains three regions and processes each element exactly once.
+
+**Alternative (Counting Approach)**:
+```python
+def sortByCounting(nums: list) -> None:
+    zeros = ones = twos = 0
+    
+    # Count occurrences
+    for num in nums:
+        if num == 0: zeros += 1
+        elif num == 1: ones += 1
+        else: twos += 1
+    
+    # Rebuild array
+    nums[0:zeros] = [0] * zeros
+    nums[zeros:zeros+ones] = [1] * ones
+    nums[zeros+ones:] = [2] * twos
+```
+**Note**: Counting approach requires 2 passes but is simpler to understand. Dutch National Flag is optimal (single pass).
 
 ## Mathematical Patterns
 
@@ -222,7 +336,7 @@ def find_single_element(nums):
 
 **Key insight**: XOR's self-canceling property (`a ^ a = 0`) makes it perfect for eliminating duplicates and finding unique elements efficiently.
 
-### Prefix Sum + Hashmap Pattern
+## Prefix Sum + Hashmap Pattern
 
 **Core Concept**: Use prefix sums to efficiently find subarrays with specific properties by storing prefix sum information in a hashmap for O(1) lookups.
 
